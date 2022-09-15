@@ -24,7 +24,7 @@ def euc_calc(means, x_train):
 def cos_calc(means, x_train):
   A = np.array(means).flatten()
   B = np.array(x_train).flatten()
-  return np.dot(A,B)/(norm(A)*norm(B))
+  return np.dot(B,A)/(norm(B)*norm(A))
 
 #add the mnist dataset
 f = gzip.open('mnist.pkl.gz', 'rb')
@@ -38,6 +38,7 @@ f.close()
 #generate average datapoints (provided by numpy)
 digits, means = npi.group_by(y_train).mean(x_train)
 
+
 man_train = np.zeros(60000, dtype = int)
 man_test = np.zeros(10000, dtype = int)
 euc_train = np.zeros(60000, dtype = int)
@@ -48,7 +49,7 @@ man_avg = np.zeros(10, dtype=int)
 euc_avg = np.zeros(10, dtype=int)
 cos_avg = np.zeros(10, dtype=int)
 #find distances
-for i in range(x_train.size - 1):
+for i in range(59999):
   for image in range(9):
     #manhattan
     man_avg[image] = man_calculation(means[image], x_train[i])
@@ -61,7 +62,7 @@ for i in range(x_train.size - 1):
   euc_train[i] = euc_avg.argmin()
   cos_train[i] = cos_avg.argmax()
   #do the same with test set
-for i in range(x_test.size - 1):
+for i in range(9999):
   for image in range(9):
     #manhattan
     man_avg[image] = man_calculation(means[image], x_test[i])
