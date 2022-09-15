@@ -79,11 +79,11 @@ for index, row in X_train.iterrows():
   cos_setos = cos_process(row, average_dataset, 0)
   cos_versi = cos_process(row, average_dataset, 1)
   cos_virgi = cos_process(row, average_dataset, 2)
-  if((cos_setos < cos_versi) and (cos_setos < cos_virgi)):
+  if((cos_setos > cos_versi) and (cos_setos > cos_virgi)):
     cos_train.at[index, 'class']='Iris-setosa'
-  if((cos_versi < cos_setos) and (cos_versi < cos_virgi)):
+  if((cos_versi > cos_setos) and (cos_versi > cos_virgi)):
     cos_train.at[index, 'class'] = 'Iris-versicolor'
-  if((cos_virgi < cos_versi) and (cos_virgi < cos_setos)):
+  if((cos_virgi > cos_versi) and (cos_virgi > cos_setos)):
     cos_train.at[index, 'class'] = 'Iris-virginica'
 
 #do the same for test set
@@ -115,11 +115,11 @@ for index, row in X_test.iterrows():
   cos_setos = cos_process(row, average_dataset, 0)
   cos_versi = cos_process(row, average_dataset, 1)
   cos_virgi = cos_process(row, average_dataset, 2)
-  if((cos_setos < cos_versi) and (cos_setos < cos_virgi)):
+  if((cos_setos > cos_versi) and (cos_setos > cos_virgi)):
     cos_test.at[index, 'class']='Iris-setosa'
-  if((cos_versi < cos_setos) and (cos_versi < cos_virgi)):
+  if((cos_versi > cos_setos) and (cos_versi > cos_virgi)):
     cos_test.at[index, 'class'] = 'Iris-versicolor'
-  if((cos_virgi < cos_versi) and (cos_virgi < cos_setos)):
+  if((cos_virgi > cos_versi) and (cos_virgi > cos_setos)):
     cos_test.at[index, 'class'] = 'Iris-virginica'
 
 #print training confusion matrices
