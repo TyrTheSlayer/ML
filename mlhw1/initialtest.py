@@ -2,6 +2,8 @@ from math import sqrt
 import pandas as pd
 from sklearn.model_selection import train_test_split
 import numpy as np
+import matplotlib.pyplot as plt
+from sklearn import metrics
 
 def man_dist(x1, x2):
   return abs(x1-x2)
@@ -49,13 +51,24 @@ virgi_pl_avg = datasets['Iris-virginica']['sepallength'].mean()
 data = {'class':['Iris-setosa', 'Iris-versicolor', 'Iris-virginica'],'sepallength':[setos_sl_avg,versi_sl_avg,virgi_sl_avg],'sepalwidth':[setos_sw_avg,versi_sw_avg,virgi_sw_avg],'petalwidth':[setos_pw_avg,versi_pw_avg,virgi_pw_avg],'petallength':[setos_pl_avg,versi_pl_avg,virgi_pl_avg]}
 average_dataset = pd.DataFrame(data)
 #For each data point in the training set, find the closest from the average templates. Use Manhattan, Euclidean and Cosine distances (note that higher cosine value means lower distance). Give the point that label.
-manhattan = X_train
-euclid = X_train
-cosin = X_train
+man_train = X_train
+euc_train = X_train
+cos_train = X_train
 for index, row in X_train.iterrows():
   #manhattan
   man_setos = man_process(row, average_dataset, 0)
   man_versi = man_process(row, average_dataset, 1)
   man_virgi = man_process(row, average_dataset, 2)
-  if (man_setos < man_versi) and (man_setos < man_virgi):
-    manhattan['class'] = manhattan['class'].replace([index],'Iris-setosa')
+  if((man_setos < man_versi) and (man_setos < man_virgi)):
+    man_train.at[index, 'class']='Iris-setosa'
+  if((man_versi < man_setos) and (man_versi < man_virgi)):
+    man_train.at[index, 'class'] = 'Iris-versicolor'
+  if((man_virgi < man_versi) and (man_virgi < man_setos)):
+    man_train.at[index, 'class'] = 'Iris-virginica'
+  
+  #euclidean
+  
+
+print("Manhattan Confusion Matrix Training")
+confusion_matrix = pd.crosstab(X_train['class'], man_train['class'], rownames=['Actual'], colnames=['Predicted'])
+print(confusion_matrix)
