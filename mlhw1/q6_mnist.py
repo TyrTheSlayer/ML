@@ -48,7 +48,7 @@ man_avg = np.zeros(10, dtype=int)
 euc_avg = np.zeros(10, dtype=int)
 cos_avg = np.zeros(10, dtype=int)
 #find distances
-for i in range(x_train.size):
+for i in range(x_train.size - 1):
   for image in range(9):
     #manhattan
     man_avg[image] = man_calculation(means[image], x_train[i])
@@ -61,7 +61,7 @@ for i in range(x_train.size):
   euc_train[i] = euc_avg.argmin()
   cos_train[i] = cos_avg.argmax()
   #do the same with test set
-for i in range(x_test.size):
+for i in range(x_test.size - 1):
   for image in range(9):
     #manhattan
     man_avg[image] = man_calculation(means[image], x_test[i])
