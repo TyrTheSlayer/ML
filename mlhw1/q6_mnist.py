@@ -60,7 +60,7 @@ for i in range(59999):
   #find the proper label as min from list
   man_train[i] = man_avg.argmin()
   euc_train[i] = euc_avg.argmin()
-  cos_train[i] = cos_avg.argmin()
+  cos_train[i] = cos_avg.argmax()
   #do the same with test set
 for i in range(9999):
   for image in range(10):
@@ -73,7 +73,7 @@ for i in range(9999):
   #find the proper label as min from list
   man_test[i] = man_avg.argmin()
   euc_test[i] = euc_avg.argmin()
-  cos_test[i] = cos_avg.argmin()
+  cos_test[i] = cos_avg.argmax()
 
 #print training confusion matrices
 print("Training")
