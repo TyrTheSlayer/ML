@@ -50,7 +50,7 @@ euc_avg = np.zeros(10, dtype=int)
 cos_avg = np.zeros(10, dtype=int)
 #find distances
 for i in range(59999):
-  for image in range(9):
+  for image in range(10):
     #manhattan
     man_avg[image] = man_calculation(means[image], x_train[i])
     #euclidean
@@ -60,10 +60,10 @@ for i in range(59999):
   #find the proper label as min from list
   man_train[i] = man_avg.argmin()
   euc_train[i] = euc_avg.argmin()
-  cos_train[i] = cos_avg.argmax()
+  cos_train[i] = cos_avg.argmin()
   #do the same with test set
 for i in range(9999):
-  for image in range(9):
+  for image in range(10):
     #manhattan
     man_avg[image] = man_calculation(means[image], x_test[i])
     #euclidean
@@ -73,7 +73,7 @@ for i in range(9999):
   #find the proper label as min from list
   man_test[i] = man_avg.argmin()
   euc_test[i] = euc_avg.argmin()
-  cos_test[i] = cos_avg.argmax()
+  cos_test[i] = cos_avg.argmin()
 
 #print training confusion matrices
 print("Training")
