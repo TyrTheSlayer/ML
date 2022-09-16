@@ -1,9 +1,10 @@
 from sklearn.cluster import KMeans
-from sklearn.model_selection import train_test_split
-from sklearn.datasets import load_iris
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import gzip
+import sys; 
+import pickle;
 
 def label_centroids(correct_labels, closest_centroid, k):
     correct_centroid_labels = []
@@ -29,23 +30,31 @@ def get_pred(closest_centroid, correct_centroid_labels):
 def man_distance(centroids, data):
     min = 9999999
     for i in range(0, len(centroids)):
-        #print(i)
-        #print(abs(centroids[i][0] - data[0]) + abs(centroids[i][1] - data[1]) + abs(centroids[i][2] - data[2]) + abs(centroids[i][3] - data[3]))
-        val = abs(centroids[i][0] - data[0]) + abs(centroids[i][1] - data[1]) + abs(centroids[i][2] - data[2]) + abs(centroids[i][3] - data[3])
+        val = 0
+        for j in range(0, 28):
+            for k in range(0,28):
+                val += abs(centroids[i][j][k] - data[j][k])
         if val < min:
             min = val
             index = i
     return index
 
 # Loading data
-irisData = load_iris()
+#add the mnist dataset
+f = gzip.open('mnist.pkl.gz', 'rb')
+if sys.version_info < (3,):
+    data = pickle.load(f)
+else:
+    data = pickle.load(f, encoding='bytes')
+f.close()
+(x_train, y_train), (x_test, y_test) = data
 
-# Create feature and target arrays
-X = irisData.data
-y = irisData.target
-
-# Split into training and test set
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+X_train = np.zeros((60000, 784), dtype = int)
+X_test = np.zeros((10000, 784), dtype = int)
+for i in range(59999):
+    X_train[i] = x_train[i].flatten()
+for i in range(9999):
+    X_test[i] = x_train[i].flatten()
 
 K = range(1, 16)
 J = range(0, 15)
