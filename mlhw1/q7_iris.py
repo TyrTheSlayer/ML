@@ -57,9 +57,9 @@ for k in K:
     #print(k + 1, end="\n")
     # print(centroids[k],end = "\n")
     #print(labels[k],end = "\n")
-     #print(train_pred, end = "\n")
+    #print(train_pred[k], end = "\n")
 for k in K:
-    centroid_labels = label_centroids(y_train, train_pred[k-1], k)
+    centroid_labels = label_centroids(y_train, labels[k-1], k)
     pred = get_pred(train_pred[k-1],centroid_labels)
     print(k, end = " cluster ")
     print("Training", end = "\n")
