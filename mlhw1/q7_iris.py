@@ -2,7 +2,9 @@ from sklearn.cluster import KMeans
 from sklearn.model_selection import train_test_split
 from sklearn.datasets import load_iris
 import pandas as pd
+from math import sqrt
 import numpy as np
+from numpy.linalg import norm
 import matplotlib.pyplot as plt
 
 def label_centroids(correct_labels, closest_centroid, k):
@@ -34,7 +36,27 @@ def man_distance(centroids, data):
         val = abs(centroids[i][0] - data[0]) + abs(centroids[i][1] - data[1]) + abs(centroids[i][2] - data[2]) + abs(centroids[i][3] - data[3])
         if val < min:
             min = val
-            index = i;
+            index = i
+    return index
+
+def euc_distance(centroids,data):
+    min = 9999999
+    for i in range(0, len(centroids)):
+        val = sqrt(pow(centroids[i][0] - data[0],2) + pow(centroids[i][1] - data[1],2) + pow(centroids[i][2] - data[2],2) + pow(centroids[i][3] - data[3],2))
+        if val < min:
+            min = val
+            index = i
+    return index
+
+def cos_distance(centroids,data):
+    max = 0
+    for i in range(0, len(centroids)):
+        A = np.array([centroids[i][0], centroids[i][1], centroids[i][2], centroids[i][3]])
+        B = np.array([data[0], data[1], data[2], data[3]])
+        val = np.dot(A, B) / (norm(A) * norm(B))
+        if val > max:
+            max = val
+            index = i
     return index
 
 # Loading data
@@ -64,13 +86,26 @@ for k in K:
     centroids.append(kmeanModel.cluster_centers_)
 
 man_distances = []
+euc_distances = []
+cos_distances = []
+
 for i in range(0,len(centroids)):
-    tmp = []
+    tmp_man = []
+    tmp_euc = []
+    tmp_cos = []
+
     for j in range(0, len(X_train)):
-        val = man_distance(centroids[i], X_train[j])
-        tmp.append(val)
-    man_distances.append(tmp)
-print(man_distances)
+        tmp_man.append(man_distance(centroids[i], X_train[j]))
+        tmp_euc.append(euc_distance(centroids[i], X_train[j]))
+        tmp_cos.append(cos_distance(centroids[i], X_train[j]))
+
+    man_distances.append(tmp_man)
+    euc_distances.append(tmp_euc)
+    cos_distances.append(tmp_cos)
+
+#print(man_distances)
+#print(euc_distances)
+#print(cos_distances)
 
 #for k in J:
     #print(k + 1, end="\n")
@@ -79,6 +114,8 @@ print(man_distances)
     #print(train_pred[k], end = "\n")
 for k in K:
     centroid_labels = label_centroids(y_train, labels[k-1], k)
+    print(centroid_labels)
+
     pred = get_pred(train_pred[k-1],centroid_labels)
     print(k, end = " cluster ")
     print("Training", end = "\n")
