@@ -26,6 +26,16 @@ def get_pred(closest_centroid, correct_centroid_labels):
 
     return prediction
 
+def man_distance(centroids, data):
+    min = 9999999
+    for i in range(0, len(centroids)):
+        #print(i)
+        #print(abs(centroids[i][0] - data[0]) + abs(centroids[i][1] - data[1]) + abs(centroids[i][2] - data[2]) + abs(centroids[i][3] - data[3]))
+        val = abs(centroids[i][0] - data[0]) + abs(centroids[i][1] - data[1]) + abs(centroids[i][2] - data[2]) + abs(centroids[i][3] - data[3])
+        if val < min:
+            min = val
+            index = i;
+    return index
 
 # Loading data
 irisData = load_iris()
@@ -52,6 +62,15 @@ for k in K:
     train_pred.append(kmeanModel.predict(X_train))
     test_pred.append(kmeanModel.predict(X_test))
     centroids.append(kmeanModel.cluster_centers_)
+
+man_distances = []
+for i in range(0,len(centroids)):
+    tmp = []
+    for j in range(0, len(X_train)):
+        val = man_distance(centroids[i], X_train[j])
+        tmp.append(val)
+    man_distances.append(tmp)
+print(man_distances)
 
 #for k in J:
     #print(k + 1, end="\n")
