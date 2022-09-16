@@ -59,6 +59,13 @@ def cos_distance(centroids,data):
             index = i
     return index
 
+def score(actual, predicted):
+    num = 0
+    for i in range(0,len(actual)):
+        if actual[i] != predicted[i]:
+            num += 1
+    return num / len(actual)
+
 # Loading data
 irisData = load_iris()
 
@@ -85,23 +92,40 @@ for k in K:
     test_pred.append(kmeanModel.predict(X_test))
     centroids.append(kmeanModel.cluster_centers_)
 
-man_distances = []
-euc_distances = []
-cos_distances = []
+man_distances_train = []
+euc_distances_train = []
+cos_distances_train = []
+
+man_distances_test = []
+euc_distances_test = []
+cos_distances_test = []
 
 for i in range(0,len(centroids)):
     tmp_man = []
     tmp_euc = []
     tmp_cos = []
 
+    tmp1_man = []
+    tmp1_euc = []
+    tmp1_cos = []
+
     for j in range(0, len(X_train)):
         tmp_man.append(man_distance(centroids[i], X_train[j]))
         tmp_euc.append(euc_distance(centroids[i], X_train[j]))
         tmp_cos.append(cos_distance(centroids[i], X_train[j]))
 
-    man_distances.append(tmp_man)
-    euc_distances.append(tmp_euc)
-    cos_distances.append(tmp_cos)
+    for j in range(0, len(X_test)):
+        tmp1_man.append(man_distance(centroids[i], X_test[j]))
+        tmp1_euc.append(euc_distance(centroids[i], X_test[j]))
+        tmp1_cos.append(cos_distance(centroids[i], X_test[j]))
+
+    man_distances_train.append(tmp_man)
+    euc_distances_train.append(tmp_euc)
+    cos_distances_train.append(tmp_cos)
+
+    man_distances_test.append(tmp1_man)
+    euc_distances_test.append(tmp1_euc)
+    cos_distances_test.append(tmp1_cos)
 
 #print(man_distances)
 #print(euc_distances)
@@ -114,26 +138,69 @@ for i in range(0,len(centroids)):
     #print(train_pred[k], end = "\n")
 for k in K:
     centroid_labels = label_centroids(y_train, labels[k-1], k)
-    print(centroid_labels)
+    #print(centroid_labels)
 
-    pred = get_pred(train_pred[k-1],centroid_labels)
+    pred = get_pred(man_distances_train[k-1],centroid_labels)
     print(k, end = " cluster ")
-    print("Training", end = "\n")
+    print("Manhattan Training", end = "\n")
     confusion_matrix = pd.crosstab(y_train, pred, rownames=['Actual'], colnames=['Predicted'])
     print(confusion_matrix)
     print("----------------------", end = "\n")
 
-    pred = get_pred(test_pred[k - 1], centroid_labels)
-    print(k, end = " cluster ")
-    print("Testing", end = "\n")
+    pred = get_pred(euc_distances_train[k - 1], centroid_labels)
+    print(k, end=" cluster ")
+    print("Euclidean Training", end="\n")
+    confusion_matrix = pd.crosstab(y_train, pred, rownames=['Actual'], colnames=['Predicted'])
+    print(confusion_matrix)
+    print("----------------------", end="\n")
+
+    pred = get_pred(cos_distances_train[k - 1], centroid_labels)
+    print(k, end=" cluster ")
+    print("Cosine Training", end="\n")
+    confusion_matrix = pd.crosstab(y_train, pred, rownames=['Actual'], colnames=['Predicted'])
+    print(confusion_matrix)
+    print("----------------------", end="\n")
+
+    pred = get_pred(man_distances_test[k - 1], centroid_labels)
+    print(k, end=" cluster ")
+    print("Manhattan Testing", end="\n")
     confusion_matrix = pd.crosstab(y_test, pred, rownames=['Actual'], colnames=['Predicted'])
     print(confusion_matrix)
     print("----------------------", end="\n")
-# print(y_train)
 
-# plt.figure()
-# plt.plot(K, distortions, 'bx-')
-# plt.xlabel('k')
-# plt.ylabel('Distortion')
-# plt.title('The Elbow Method showing the optimal k')
-# plt.show()
+    pred = get_pred(euc_distances_test[k - 1], centroid_labels)
+    print(k, end=" cluster ")
+    print("Euclidean Testing", end="\n")
+    confusion_matrix = pd.crosstab(y_test, pred, rownames=['Actual'], colnames=['Predicted'])
+    print(confusion_matrix)
+    print("----------------------", end="\n")
+
+    pred = get_pred(cos_distances_test[k - 1], centroid_labels)
+    print(k, end=" cluster ")
+    print("Cosine Testing", end="\n")
+    confusion_matrix = pd.crosstab(y_test, pred, rownames=['Actual'], colnames=['Predicted'])
+    print(confusion_matrix)
+    print("----------------------", end="\n")
+
+man_score = []
+euc_score = []
+cos_score = []
+
+#print(y_test)
+#print(man_distances_test)
+
+for i in range(0,len(man_distances_test)):
+    man_score.append(score(y_test, man_distances_test[i]))
+    euc_score.append(score(y_test, euc_distances_test[i]))
+    cos_score.append(score(y_test, cos_distances_test[i]))
+
+plt.plot(K, euc_score, label='Euclidean')
+plt.plot(K, man_score, label='Manhattan')
+plt.plot(K, cos_score, label='Cosine')
+
+plt.legend()
+plt.xlabel('k value')
+plt.ylabel('percent correct')
+plt.title('Percent Correct per Neighbor Testing')
+plt.show()
+
