@@ -17,6 +17,9 @@ def label_centroids(correct_labels, closest_centroid, k):
                 tmp[correct_labels[j]] += 1
         correct_centroid_labels.append(tmp.index(max(tmp)))
     #print(correct_centroid_labels)
+    return correct_centroid_labels
+
+def get_pred(closest_centroid, correct_centroid_labels):
     prediction = []
     for j in range(0, len(closest_centroid)):
         prediction.append(correct_centroid_labels[closest_centroid[j]])
@@ -56,14 +59,15 @@ for k in K:
     #print(labels[k],end = "\n")
      #print(train_pred, end = "\n")
 for k in K:
-    pred = label_centroids(y_train, train_pred[k-1], k)
+    centroid_labels = label_centroids(y_train, train_pred[k-1], k)
+    pred = get_pred(train_pred[k-1],centroid_labels)
     print(k, end = " cluster ")
     print("Training", end = "\n")
     confusion_matrix = pd.crosstab(y_train, pred, rownames=['Actual'], colnames=['Predicted'])
     print(confusion_matrix)
     print("----------------------", end = "\n")
 
-    pred = label_centroids(y_test, test_pred[k - 1], k)
+    pred = get_pred(test_pred[k - 1], centroid_labels)
     print(k, end = " cluster ")
     print("Testing", end = "\n")
     confusion_matrix = pd.crosstab(y_test, pred, rownames=['Actual'], colnames=['Predicted'])
