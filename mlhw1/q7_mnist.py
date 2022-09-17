@@ -84,6 +84,9 @@ X_train = np.zeros((60000, 784), dtype = int)
 X_train = X_train[0:2500]
 X_test = np.zeros((10000, 784), dtype = int)
 X_test = X_test[0:200]
+y_train = y_train[0:2500]
+y_test = y_test[0:200]
+
 for i in range(2500):
     X_train[i] = x_train[i].flatten()
 for i in range(200):
@@ -149,9 +152,13 @@ for i in range(0,len(centroids)):
     # print(centroids[k],end = "\n")
     #print(labels[k],end = "\n")
     #print(train_pred[k], end = "\n")
+man_score = []
+euc_score = []
+cos_score = []
+
 for k in K:
     centroid_labels = label_centroids(y_train, labels[k-1], k)
-    #print(centroid_labels)
+    print(centroid_labels)
 
     pred = get_pred(man_distances_train[k-1],centroid_labels)
     print(k, end = " cluster ")
@@ -180,6 +187,7 @@ for k in K:
     confusion_matrix = pd.crosstab(y_test, pred, rownames=['Actual'], colnames=['Predicted'])
     print(confusion_matrix)
     print("----------------------", end="\n")
+    man_score.append(score(y_test, pred))
 
     pred = get_pred(euc_distances_test[k - 1], centroid_labels)
     print(k, end=" cluster ")
@@ -187,6 +195,7 @@ for k in K:
     confusion_matrix = pd.crosstab(y_test, pred, rownames=['Actual'], colnames=['Predicted'])
     print(confusion_matrix)
     print("----------------------", end="\n")
+    euc_score.append(score(y_test, pred))
 
     #pred = get_pred(cos_distances_test[k - 1], centroid_labels)
     #print(k, end=" cluster ")
@@ -194,18 +203,7 @@ for k in K:
     #confusion_matrix = pd.crosstab(y_test, pred, rownames=['Actual'], colnames=['Predicted'])
     #print(confusion_matrix)
     #print("----------------------", end="\n")
-
-man_score = []
-euc_score = []
-cos_score = []
-
-#print(y_test)
-#print(man_distances_test)
-
-for i in range(0,len(man_distances_test)):
-    man_score.append(score(y_test, man_distances_test[i]))
-    euc_score.append(score(y_test, euc_distances_test[i]))
-    #cos_score.append(score(y_test, cos_distances_test[i]))
+    #cos_score.append(score(y_test, pred))
 
 plt.plot(K, euc_score, label='Euclidean')
 plt.plot(K, man_score, label='Manhattan')

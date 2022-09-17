@@ -136,6 +136,10 @@ for i in range(0,len(centroids)):
     # print(centroids[k],end = "\n")
     #print(labels[k],end = "\n")
     #print(train_pred[k], end = "\n")
+man_score = []
+euc_score = []
+cos_score = []
+
 for k in K:
     centroid_labels = label_centroids(y_train, labels[k-1], k)
     #print(centroid_labels)
@@ -167,6 +171,7 @@ for k in K:
     confusion_matrix = pd.crosstab(y_test, pred, rownames=['Actual'], colnames=['Predicted'])
     print(confusion_matrix)
     print("----------------------", end="\n")
+    man_score.append(score(y_test, pred))
 
     pred = get_pred(euc_distances_test[k - 1], centroid_labels)
     print(k, end=" cluster ")
@@ -174,6 +179,7 @@ for k in K:
     confusion_matrix = pd.crosstab(y_test, pred, rownames=['Actual'], colnames=['Predicted'])
     print(confusion_matrix)
     print("----------------------", end="\n")
+    euc_score.append(score(y_test, pred))
 
     pred = get_pred(cos_distances_test[k - 1], centroid_labels)
     print(k, end=" cluster ")
@@ -181,18 +187,10 @@ for k in K:
     confusion_matrix = pd.crosstab(y_test, pred, rownames=['Actual'], colnames=['Predicted'])
     print(confusion_matrix)
     print("----------------------", end="\n")
-
-man_score = []
-euc_score = []
-cos_score = []
+    cos_score.append(score(y_test, pred))
 
 #print(y_test)
 #print(man_distances_test)
-
-for i in range(0,len(man_distances_test)):
-    man_score.append(score(y_test, man_distances_test[i]))
-    euc_score.append(score(y_test, euc_distances_test[i]))
-    cos_score.append(score(y_test, cos_distances_test[i]))
 
 plt.plot(K, euc_score, label='Euclidean')
 plt.plot(K, man_score, label='Manhattan')
