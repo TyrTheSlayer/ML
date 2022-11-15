@@ -64,7 +64,7 @@ for file in filelist:
     df.loc[df['STATION'] == 72308013737, 'state'] = 'virginia'
     df.loc[df['STATION'] == 72793024233, 'state'] = 'washington'
     df.loc[df['STATION'] == 72414013866, 'state'] = 'west virginia'
-    df.loc[df['STATION'] == 72640594869, 'state'] = 'wisconsin'
+    df.loc[df['STATION'] == 72640014839, 'state'] = 'wisconsin'
     df.loc[df['STATION'] == 72564024018, 'state'] = 'wyoming'
 
 
