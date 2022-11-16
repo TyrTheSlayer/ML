@@ -4,9 +4,14 @@ setwd("~/ML/project/")
 
 al_ga = read.csv("data/monthly-al-ga.csv")
 hi_md = read.csv("data/monthly-hi-md.csv")
-ma-nj = read.csv("data/monthly-ma-nj.csv")
-nm-sc = read.csv("data/monthly-nm-sc.csv")
-sd-wy = read.csv("data/monthly-sd-wy.csv")
+ma_nj = read.csv("data/monthly-ma-nj.csv")
+nm_sc = read.csv("data/monthly-nm-sc.csv")
+sd_wy = read.csv("data/monthly-sd-wy.csv")
+
+data = rbind(al_ga, hi_md)
+data = rbind(data, ma_nj)
+data = rbind(data, nm_sc)
+data = rbind(data, sd_wy)
 
 data2 = data[,c("MonthlyMeanTemperature", "MonthlyStationPressure")]
 data2[is.na(data2)] <- 0
