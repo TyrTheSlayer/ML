@@ -66,7 +66,7 @@ for file in filelist:
     df.loc[df['STATION'] == 72414013866, 'state'] = 'west virginia'
     df.loc[df['STATION'] == 72640014839, 'state'] = 'wisconsin'
     df.loc[df['STATION'] == 72564024018, 'state'] = 'wyoming'
-
+    df.fillna(0)
 
     #grab labels
     labels = pd.DataFrame()
