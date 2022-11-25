@@ -8,6 +8,7 @@ ma_nj = read.csv("data/monthly-ma-nj.csv")
 nm_sc = read.csv("data/monthly-nm-sc.csv")
 sd_wy = read.csv("data/monthly-sd-wy.csv")
 
+
 data = rbind(al_ga[-1,], hi_md[-1,])
 data = rbind(data, ma_nj[-1,])
 data = rbind(data, nm_sc[-1,])
