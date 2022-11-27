@@ -78,3 +78,16 @@ for file in monthly:
         precip.loc[precip.index[precip['state'] == row['state']], "m"+str(dt_object.month)] = float(row['MonthlyMinimumTemperature'])
 precip = precip.fillna(0)
 precip.to_csv("data/monthly-min-temp.csv")
+
+#total snowfall
+data = {"state": us_states, "m1": length, "m2": length, "m3": length, "m4": length, "m5": length, "m6": length, "m7": length, "m8": length, "m9": length, "m10": length, "m11": length, "m12": length}
+precip = pd.DataFrame(data)
+#create mean temp here
+for file in monthly:
+    df2 = pd.read_csv("data/"+file, low_memory=False)
+    for index, row in df2.iloc[1: , :].iterrows():
+        dt_object = datetime.datetime.strptime(row['DATE'], str_format)
+        row['MonthlyTotalSnowfall'] = str(row['MonthlyTotalSnowfall']).replace("T", "0")
+        precip.loc[precip.index[precip['state'] == row['state']], "m"+str(dt_object.month)] = float(row['MonthlyTotalSnowfall'])
+precip = precip.fillna(float(0))
+precip.to_csv("data/monthly-total-snowfall.csv")
