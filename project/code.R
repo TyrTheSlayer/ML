@@ -9,6 +9,13 @@ greatest_precip = read.csv("data/monthly-greatest-precip.csv")
 pressure = read.csv("data/monthly-station-pressure.csv")
 snowfall = read.csv("data/monthly-total-snowfall.csv")
 
+combo.temp_precip = merge(temp[,-1], greatest_precip[,-1], by= "state")
+combo.min_max_temp = merge(max_temp[,-1], min_temp[,-1], by= "state")
+combo.all_temp = merge(combo.min_max_temp, temp[,-1], by= "state")
+print(combo.all_temp[2:37])
+
+print(combo.temp_precip[2:25])
+
 #heatmaps
 h1 <-  heatmap(scale(temp[3:14]), distfun = dist, keep.dendro = T,labRow = temp$state, 
                main="Cluster on Mean Temp", xlab = "Month")
@@ -23,6 +30,10 @@ h1 <-  heatmap(scale(pressure[3:14]), distfun = dist, keep.dendro = T,labRow = t
 h1 <-  heatmap(scale(snowfall[3:14]), distfun = dist, keep.dendro = T,labRow = temp$state, 
                main="Cluster on Snowfall", xlab = "Month")
 
+h2 <- heatmap(scale(combo.temp_precip[2:25]), distfun = dist, keep.dendro = T,labRow = temp$state, 
+              main="Cluster on mean/precipitation", xlab = "Month")
+h3 <- heatmap(scale(combo.all_temp[2:37]), distfun = dist, keep.dendro = T,labRow = combo.all_temp$state, 
+              main="Cluster on all temp", xlab = "Month")
 
 #Basic Trees
 mean_tree = hclust(dist(scale(temp[3:14])), "ave")
@@ -39,6 +50,11 @@ plot(pressure_tree, labels = pressure$state, main = "Pressure Dendrogram")
 snowfall_tree = hclust(dist(scale(snowfall[3:14])), "ave")
 plot(snowfall_tree, labels = snowfall$state, main = "snowfall Dendrogram")
 
+mean_precip_tree = hclust(dist(scale(combo.temp_precip[2:25])), "ave")
+plot(mean_precip_tree, labels = combo.temp_precip$state, main = "Mean temp/precipitation Dendrogram")
+
+all_temp_tree = hclust(dist(scale(combo.all_temp[2:37])), "ave")
+plot(all_temp_tree, labels = combo.all_temp$state, main = "All Temp Dendrogram")
 ###############KMeans#################
 K = 5
 
