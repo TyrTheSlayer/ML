@@ -2,6 +2,9 @@
 #SML and ML
 setwd("~/ML/project/")
 
+library("gplots")
+require("RColorBrewer")
+
 temp = read.csv("data/monthly-mean-temp.csv")
 min_temp = read.csv("data/monthly-min-temp.csv")
 max_temp = read.csv("data/monthly-max-temp.csv")
@@ -12,6 +15,10 @@ snowfall = read.csv("data/monthly-total-snowfall.csv")
 combo.temp_precip = merge(temp[,-1], greatest_precip[,-1], by= "state")
 combo.min_max_temp = merge(max_temp[,-1], min_temp[,-1], by= "state")
 combo.all_temp = merge(combo.min_max_temp, temp[,-1], by= "state")
+temp_precip = merge(combo.all_temp, greatest_precip[,-1], by= "state")
+all = merge(temp_precip, pressure[,-1], by= "state")
+rownames(all) = all$state
+rownames(temp_precip) = temp_precip$state
 print(combo.all_temp[2:37])
 
 print(combo.temp_precip[2:25])
@@ -35,6 +42,14 @@ h2 <- heatmap(scale(combo.temp_precip[2:25]), distfun = dist, keep.dendro = T,la
 h3 <- heatmap(scale(combo.all_temp[2:37]), distfun = dist, keep.dendro = T,labRow = combo.all_temp$state, 
               main="Cluster on all temp", xlab = "Month")
 
+#Heatmap.2 exploration
+my_palette <- colorRampPalette(c("blue", "white", "red"))(n = 299)
+
+library("pheatmap")
+pheatmap(scale(combo.all_temp[2:37]))
+heatmap.2(scale(combo.all_temp[2:37]), scale = "none", main = "All Temp Explo", col = my_palette, 
+          trace = "none", density.info = "none", dendrogram="row",Colv="NA", margins =c(12,9))
+
 #Basic Trees
 mean_tree = hclust(dist(scale(temp[3:14])), "ave")
 plot(mean_tree, labels = temp$state, main = "Mean Temp Dendrogram")
@@ -55,6 +70,38 @@ plot(mean_precip_tree, labels = combo.temp_precip$state, main = "Mean temp/preci
 
 all_temp_tree = hclust(dist(scale(combo.all_temp[2:37])), "ave")
 plot(all_temp_tree, labels = combo.all_temp$state, main = "All Temp Dendrogram")
+
+##Tree Exploration, all temp
+par(mar=c(7,5,4,2)+0.1,mgp=c(5,1,0))
+#average distance between clusters
+all_temp_ave = hclust(dist(scale(combo.all_temp[2:37])), method="average")
+plot(as.dendrogram(all_temp_ave),  main = "All Temp Dendrogram Average dist")
+#min distance between clusters
+all_temp_min = hclust(dist(scale(combo.all_temp[2:37])), method="single")
+plot(as.dendrogram(all_temp_min),  main = "All Temp Dendrogram Min Cluster Dist")
+#max distance between clusters
+all_temp_max = hclust(dist(scale(combo.all_temp[2:37])), method="complete")
+plot(as.dendrogram(all_temp_max),  main = "All Temp Dendrogram Max Cluster Dist")
+#centroid distance between clusters
+all_temp_centroid = hclust(dist(scale(combo.all_temp[2:37])), method="centroid")
+plot(as.dendrogram(all_temp_centroid),  main = "All Temp Dendrogram Centroid Dist")
+rect.hclust(all_temp_centroid, k = 7)
+#median centroid distance between clusters
+all_temp_median = hclust(dist(scale(combo.all_temp[2:37])), method="median")
+plot(as.dendrogram(all_temp_median),  main = "All Temp Dendrogram median Centroid Dist")
+#ward distance between clusters
+all_temp_ward = hclust(dist(scale(combo.all_temp[2:37])), method="ward.D")
+plot(as.dendrogram(all_temp_ward),  main = "All Temp Dendrogram Ward Dist")
+rect.hclust(all_temp_ward, k = 7, border = 3:4)
+
+#All temp plus precipitation
+#ward distance between clusters
+temp_precip_tree = hclust(dist(scale(temp_precip[2:49])), method="ward.D")
+plot(as.dendrogram(temp_precip_tree),  main = "Temp and Precipitation")
+
+#all things
+all_tree = hclust(dist(scale(all[2:61])), method="ward.D")
+plot(as.dendrogram(all_tree),  main = "All Variables")
 ###############KMeans#################
 K = 5
 
