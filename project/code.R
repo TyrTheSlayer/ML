@@ -11,12 +11,16 @@ max_temp = read.csv("data/monthly-max-temp.csv")
 greatest_precip = read.csv("data/monthly-greatest-precip.csv")
 pressure = read.csv("data/monthly-station-pressure.csv")
 snowfall = read.csv("data/monthly-total-snowfall.csv")
+total_precip =read.csv("data/monthly-total-liquid-precip.csv")
+rownames(total_precip) = total_precip$state
 
 combo.temp_precip = merge(temp[,-1], greatest_precip[,-1], by= "state")
 combo.min_max_temp = merge(max_temp[,-1], min_temp[,-1], by= "state")
 combo.all_temp = merge(combo.min_max_temp, temp[,-1], by= "state")
 temp_precip = merge(combo.all_temp, greatest_precip[,-1], by= "state")
 all = merge(temp_precip, pressure[,-1], by= "state")
+twoprecip_temp = merge(temp_precip, total_precip[,-1], by= "state")
+rownames(twoprecip_temp) = twoprecip_temp$state
 rownames(combo.all_temp) = combo.all_temp$state
 rownames(all) = all$state
 rownames(temp_precip) = temp_precip$state
@@ -119,6 +123,17 @@ precip_tree = hclust(dist(scale(greatest_precip[3:14])), method="ward.D")
 plot(as.dendrogram(precip_tree),  main = "Precipitation")
 rect.hclust(precip_tree, k = 7, border = 3:4)
 
+#total Precip
+rownames(total_precip) <-total_precip$state
+total_precip_tree = hclust(dist(scale(total_precip[3:14])), method="ward.D")
+plot(as.dendrogram(total_precip_tree),  main = "Total Precipitation")
+rect.hclust(total_precip_tree, k = 7, border = 3:4)
+
+#2 precips and all temps
+total_precip_tree = hclust(dist(scale(twoprecip_temp[3:61])), method="ward.D")
+plot(as.dendrogram(total_precip_tree),  main = "Total/greatest Precip and Temp")
+rect.hclust(total_precip_tree, k = 7, border = 3:4)
+
 #all things
 all_tree = hclust(dist(scale(all[2:61])), method="ward.D")
 plot(as.dendrogram(all_tree),  main = "All Variables")
@@ -129,6 +144,24 @@ clust=all_temp$cluster
 for (i in 1:K) {
   print(i)
   print(temp$state[all_temp$cluster == i])
+}
+
+#Total Precipitation
+K = 7
+big_precip = kmeans(scale(twoprecip_temp[3:61]), K, nstart = 5)
+clust=big_precip$cluster
+for (i in 1:K) {
+  print(i)
+  print(twoprecip_temp$state[big_precip$cluster == i])
+}
+
+#2 Precipitation and temp
+K = 7
+big_precip = kmeans(scale(total_precip[3:14]), K, nstart = 5)
+clust=big_precip$cluster
+for (i in 1:K) {
+  print(i)
+  print(total_precip$state[big_precip$cluster == i])
 }
 
 #temp + precip

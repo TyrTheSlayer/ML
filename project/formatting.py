@@ -91,3 +91,19 @@ for file in monthly:
         precip.loc[precip.index[precip['state'] == row['state']], "snow"+str(dt_object.month)] = float(row['MonthlyTotalSnowfall'])
 precip = precip.fillna(float(0))
 precip.to_csv("data/monthly-total-snowfall.csv")
+
+
+#total precip
+data6 = {"state": us_states, "tprecip1": length, "tprecip2": length, "tprecip3": length, "tprecip4": length, "tprecip5": length, "tprecip6": length, "tprecip7": length, "tprecip8": length, "tprecip9": length, "tprecip10": length, "tprecip11": length, "tprecip12": length}
+precip = pd.DataFrame(data6)
+#create mean temp here
+for file in monthly:
+    df2 = pd.read_csv("data/"+file, low_memory=False)
+    for index, row in df2.iloc[1: , :].iterrows():
+        dt_object = datetime.datetime.strptime(row['DATE'], str_format)
+        row['MonthlyTotalLiquidPrecipitation'] = str(row['MonthlyTotalLiquidPrecipitation']).replace("s", "")
+        row['MonthlyTotalLiquidPrecipitation'] = str(row['MonthlyTotalLiquidPrecipitation']).replace("T", "0.00")
+        precip.loc[precip.index[precip['state'] == row['state']], "tprecip"+str(dt_object.month)] = float(row['MonthlyTotalLiquidPrecipitation'])
+precip = precip.fillna(float(0))
+print(precip)
+precip.to_csv("data/monthly-total-liquid-precip.csv")
