@@ -17,6 +17,7 @@ combo.min_max_temp = merge(max_temp[,-1], min_temp[,-1], by= "state")
 combo.all_temp = merge(combo.min_max_temp, temp[,-1], by= "state")
 temp_precip = merge(combo.all_temp, greatest_precip[,-1], by= "state")
 all = merge(temp_precip, pressure[,-1], by= "state")
+rownames(combo.all_temp) = combo.all_temp$state
 rownames(all) = all$state
 rownames(temp_precip) = temp_precip$state
 print(combo.all_temp[2:37])
@@ -76,35 +77,68 @@ par(mar=c(7,5,4,2)+0.1,mgp=c(5,1,0))
 #average distance between clusters
 all_temp_ave = hclust(dist(scale(combo.all_temp[2:37])), method="average")
 plot(as.dendrogram(all_temp_ave),  main = "All Temp Dendrogram Average dist")
+rect.hclust(all_temp_ave, k = 7, border = 3:4)
 #min distance between clusters
 all_temp_min = hclust(dist(scale(combo.all_temp[2:37])), method="single")
 plot(as.dendrogram(all_temp_min),  main = "All Temp Dendrogram Min Cluster Dist")
+rect.hclust(all_temp_min, k = 7, border = 3:4)
 #max distance between clusters
 all_temp_max = hclust(dist(scale(combo.all_temp[2:37])), method="complete")
 plot(as.dendrogram(all_temp_max),  main = "All Temp Dendrogram Max Cluster Dist")
+rect.hclust(all_temp_max, k = 7, border = 3:4)
 #centroid distance between clusters
 all_temp_centroid = hclust(dist(scale(combo.all_temp[2:37])), method="centroid")
 plot(as.dendrogram(all_temp_centroid),  main = "All Temp Dendrogram Centroid Dist")
-rect.hclust(all_temp_centroid, k = 7)
+rect.hclust(all_temp_centroid, k = 7, border = 3:4)
 #median centroid distance between clusters
 all_temp_median = hclust(dist(scale(combo.all_temp[2:37])), method="median")
 plot(as.dendrogram(all_temp_median),  main = "All Temp Dendrogram median Centroid Dist")
+rect.hclust(all_temp_median, k = 7, border = 3:4)
 #ward distance between clusters
 all_temp_ward = hclust(dist(scale(combo.all_temp[2:37])), method="ward.D")
 plot(as.dendrogram(all_temp_ward),  main = "All Temp Dendrogram Ward Dist")
 rect.hclust(all_temp_ward, k = 7, border = 3:4)
+#ward distance2 between clusters
+all_temp_ward2 = hclust(dist(scale(combo.all_temp[2:37])), method="ward.D2")
+plot(as.dendrogram(all_temp_ward2),  main = "All Temp Dendrogram Ward Dist2")
+rect.hclust(all_temp_ward2, k = 7, border = 3:4)
 
 #All temp plus precipitation
 #ward distance between clusters
 temp_precip_tree = hclust(dist(scale(temp_precip[2:49])), method="ward.D")
 plot(as.dendrogram(temp_precip_tree),  main = "Temp and Precipitation")
+rect.hclust(temp_precip_tree, k = 7, border = 3:4)
+#Ward2
+temp_precip_tree = hclust(dist(scale(temp_precip[2:49])), method="ward.D2")
+plot(as.dendrogram(temp_precip_tree),  main = "Temp and Precipitation Ward 2")
+rect.hclust(temp_precip_tree, k = 7, border = 3:4)
+
+#Just precipitation
+rownames(greatest_precip) <- greatest_precip$state
+precip_tree = hclust(dist(scale(greatest_precip[3:14])), method="ward.D")
+plot(as.dendrogram(precip_tree),  main = "Precipitation")
+rect.hclust(precip_tree, k = 7, border = 3:4)
 
 #all things
 all_tree = hclust(dist(scale(all[2:61])), method="ward.D")
 plot(as.dendrogram(all_tree),  main = "All Variables")
 ###############KMeans#################
-K = 5
+K = 7
+all_temp = kmeans(scale(combo.all_temp[2:37]), K, nstart = 5)
+clust=all_temp$cluster
+for (i in 1:K) {
+  print(i)
+  print(temp$state[all_temp$cluster == i])
+}
 
+#temp + precip
+K = 7
+temp_precip_kmean = kmeans(scale(temp_precip[2:49]), K, nstart = 5)
+clust=temp_precip_kmean$cluster
+for (i in 1:K) {
+  print(i)
+  print(temp_precip$state[temp_precip_kmean$cluster == i])
+}
 #temp
 km1 = kmeans(scale(temp[3:14]), K, nstart = 5)
 clust=km1$cluster
@@ -133,7 +167,7 @@ for (i in 1:K) {
 }
 
 #greatest precip
-km4 = kmeans(scale(greatest_precip[3:14]),K, nstart = 10)
+km4 = kmeans(scale(greatest_precip[3:14]),K, nstart = 5)
 clust=km4$cluster
 #table(temp$state, clust)
 for (i in 1:K) {
