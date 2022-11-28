@@ -226,6 +226,25 @@ for (i in 1:K) {
   print(pressure$state[km6$cluster == i])
 }
 
+################## PCA #################
+
+#All temp and both precipitations
+all_temp_precip.pca = prcomp(scale(twoprecip_temp[3:61]))
+summary(all_temp_precip.pca)
+str(all_temp_precip.pca)
+biplot(all_temp_precip.pca)
+
+#just total precipitation
+total_precip.pca = prcomp(scale(total_precip[3:14]))
+summary(total_precip.pca)
+str(total_precip.pca)
+biplot(total_precip.pca, main = "Total precipitation")
+
+#total temp
+temp.pca = prcomp(scale(combo.all_temp[2:37]))
+summary(temp.pca)
+str(temp.pca)
+biplot(temp.pca, main = "All Temp")
 ######################### NY Dataset code ####################
 #data = read.csv("Weather.csv")
 
