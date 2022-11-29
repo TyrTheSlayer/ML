@@ -5,6 +5,7 @@ setwd("~/ML/project/")
 library("gplots")
 require("RColorBrewer")
 
+#read in data
 temp = read.csv("data/monthly-mean-temp.csv")
 min_temp = read.csv("data/monthly-min-temp.csv")
 max_temp = read.csv("data/monthly-max-temp.csv")
@@ -12,21 +13,28 @@ greatest_precip = read.csv("data/monthly-greatest-precip.csv")
 pressure = read.csv("data/monthly-station-pressure.csv")
 snowfall = read.csv("data/monthly-total-snowfall.csv")
 total_precip =read.csv("data/monthly-total-liquid-precip.csv")
+labels = read.csv("data/labels2.csv")
+
 rownames(total_precip) = total_precip$state
 
+#combine/merge datasets
+#mean temp/greatest precip
 combo.temp_precip = merge(temp[,-1], greatest_precip[,-1], by= "state")
+#min/max temp
 combo.min_max_temp = merge(max_temp[,-1], min_temp[,-1], by= "state")
+#all temp values
 combo.all_temp = merge(combo.min_max_temp, temp[,-1], by= "state")
+#all temp and greatest precip
 temp_precip = merge(combo.all_temp, greatest_precip[,-1], by= "state")
-all = merge(temp_precip, pressure[,-1], by= "state")
-twoprecip_temp = merge(temp_precip, total_precip[,-1], by= "state")
-rownames(twoprecip_temp) = twoprecip_temp$state
-rownames(combo.all_temp) = combo.all_temp$state
-rownames(all) = all$state
-rownames(temp_precip) = temp_precip$state
-print(combo.all_temp[2:37])
+#all temp and both precipitates type
+temp = merge(temp_precip, total_precip[,-1], by= "state")
+twoprecip_temp = merge(labels, temp, by= "state")
+#
 
-print(combo.temp_precip[2:25])
+#make the indices state names
+
+rownames(combo.all_temp) = combo.all_temp$state
+rownames(temp_precip) = temp_precip$state
 
 #heatmaps
 h1 <-  heatmap(scale(temp[3:14]), distfun = dist, keep.dendro = T,labRow = temp$state, 
@@ -46,35 +54,6 @@ h2 <- heatmap(scale(combo.temp_precip[2:25]), distfun = dist, keep.dendro = T,la
               main="Cluster on mean/precipitation", xlab = "Month")
 h3 <- heatmap(scale(combo.all_temp[2:37]), distfun = dist, keep.dendro = T,labRow = combo.all_temp$state, 
               main="Cluster on all temp", xlab = "Month")
-
-#Heatmap.2 exploration
-my_palette <- colorRampPalette(c("blue", "white", "red"))(n = 299)
-
-library("pheatmap")
-pheatmap(scale(combo.all_temp[2:37]))
-heatmap.2(scale(combo.all_temp[2:37]), scale = "none", main = "All Temp Explo", col = my_palette, 
-          trace = "none", density.info = "none", dendrogram="row",Colv="NA", margins =c(12,9))
-
-#Basic Trees
-mean_tree = hclust(dist(scale(temp[3:14])), "ave")
-plot(mean_tree, labels = temp$state, main = "Mean Temp Dendrogram")
-min_tree = hclust(dist(scale(min_temp[3:14])), "ave")
-plot(min_tree, labels = temp$state, main = "Min Temp Dendrogram")
-max_tree = hclust(dist(scale(max_temp[3:14])), "ave")
-plot(max_tree, labels = temp$state, main = "Max Temp Dendrogram")
-precip = hclust(dist(scale(greatest_precip[3:14])), "ave")
-plot(precip, labels = temp$state, main = "Greatest Precip. Dendrogram")
-pressure_tree = hclust(dist(pressure[3:14]), "ave")
-plot(pressure_tree, labels = pressure$state, main = "Pressure Dendrogram")
-
-snowfall_tree = hclust(dist(scale(snowfall[3:14])), "ave")
-plot(snowfall_tree, labels = snowfall$state, main = "snowfall Dendrogram")
-
-mean_precip_tree = hclust(dist(scale(combo.temp_precip[2:25])), "ave")
-plot(mean_precip_tree, labels = combo.temp_precip$state, main = "Mean temp/precipitation Dendrogram")
-
-all_temp_tree = hclust(dist(scale(combo.all_temp[2:37])), "ave")
-plot(all_temp_tree, labels = combo.all_temp$state, main = "All Temp Dendrogram")
 
 ##Tree Exploration, all temp
 par(mar=c(7,5,4,2)+0.1,mgp=c(5,1,0))
@@ -130,9 +109,15 @@ plot(as.dendrogram(total_precip_tree),  main = "Total Precipitation")
 rect.hclust(total_precip_tree, k = 7, border = 3:4)
 
 #2 precips and all temps
-total_precip_tree = hclust(dist(scale(twoprecip_temp[3:61])), method="ward.D")
+rownames(twoprecip_temp) = twoprecip_temp$state
+total_precip_tree = hclust(dist(scale(twoprecip_temp[3:62])), method="ward.D")
 plot(as.dendrogram(total_precip_tree),  main = "Total/greatest Precip and Temp")
-rect.hclust(total_precip_tree, k = 13, border = 3:4)
+rect.hclust(total_precip_tree, k = 14, border = 3:4)
+#cluster with labels to see what is there or not there
+rownames(twoprecip_temp) = twoprecip_temp$label
+total_precip_tree = hclust(dist(scale(twoprecip_temp[3:62])), method="ward.D")
+plot(as.dendrogram(total_precip_tree),  main = "Total/greatest Precip and Temp")
+rect.hclust(total_precip_tree, k = 14, border = 3:4)
 
 #all things
 all_tree = hclust(dist(scale(all[2:61])), method="ward.D")
@@ -245,6 +230,31 @@ temp.pca = prcomp(scale(combo.all_temp[2:37]))
 summary(temp.pca)
 str(temp.pca)
 biplot(temp.pca, main = "All Temp")
+
+
+
+############## Depricated code no longer wanted to use ##########
+
+#Basic Trees
+mean_tree = hclust(dist(scale(temp[3:14])), "ave")
+plot(mean_tree, labels = temp$state, main = "Mean Temp Dendrogram")
+min_tree = hclust(dist(scale(min_temp[3:14])), "ave")
+plot(min_tree, labels = temp$state, main = "Min Temp Dendrogram")
+max_tree = hclust(dist(scale(max_temp[3:14])), "ave")
+plot(max_tree, labels = temp$state, main = "Max Temp Dendrogram")
+precip = hclust(dist(scale(greatest_precip[3:14])), "ave")
+plot(precip, labels = temp$state, main = "Greatest Precip. Dendrogram")
+pressure_tree = hclust(dist(pressure[3:14]), "ave")
+plot(pressure_tree, labels = pressure$state, main = "Pressure Dendrogram")
+
+snowfall_tree = hclust(dist(scale(snowfall[3:14])), "ave")
+plot(snowfall_tree, labels = snowfall$state, main = "snowfall Dendrogram")
+
+mean_precip_tree = hclust(dist(scale(combo.temp_precip[2:25])), "ave")
+plot(mean_precip_tree, labels = combo.temp_precip$state, main = "Mean temp/precipitation Dendrogram")
+
+all_temp_tree = hclust(dist(scale(combo.all_temp[2:37])), "ave")
+plot(all_temp_tree, labels = combo.all_temp$state, main = "All Temp Dendrogram")
 ######################### NY Dataset code ####################
 #data = read.csv("Weather.csv")
 
