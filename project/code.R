@@ -132,7 +132,7 @@ rect.hclust(total_precip_tree, k = 7, border = 3:4)
 #2 precips and all temps
 total_precip_tree = hclust(dist(scale(twoprecip_temp[3:61])), method="ward.D")
 plot(as.dendrogram(total_precip_tree),  main = "Total/greatest Precip and Temp")
-rect.hclust(total_precip_tree, k = 7, border = 3:4)
+rect.hclust(total_precip_tree, k = 13, border = 3:4)
 
 #all things
 all_tree = hclust(dist(scale(all[2:61])), method="ward.D")
