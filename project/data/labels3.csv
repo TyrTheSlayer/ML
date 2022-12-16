@@ -1,0 +1,51 @@
+state,label
+florida,1-1
+hawaii,1-2
+arizona,2-1
+louisiana,2-2
+texas,2-3
+alabama,3-1
+arkansas,3-2
+california,3-3
+georgia,3-4
+mississippi,3-5
+nevada,3-6
+oklahoma,3-7
+south carolina,3-8
+delaware,4-1
+kansas,4-2
+kentucky,4-3
+maryland,4-4
+missouri,4-5
+new jersey,4-6
+new mexico,4-7
+north carolina,4-8
+oregon,4-9
+pennsylvania,4-10
+tennessee,4-11
+virginia,4-12
+washington,4-13
+connecticut,5-1
+idaho,5-2
+illinois,5-3
+indiana,5-4
+iowa,5-5
+massachusetts,5-6
+michigan,5-7
+nebraska,5-8
+new york,5-9
+ohio,5-10
+rhode island,5-11
+utah,5-12
+west virginia,5-13
+colorado,6-1
+maine,6-2
+montana,6-3
+new hampshire,6-4
+north dakota,6-5
+south dakota,6-6
+vermont,6-7
+wisconsin,6-8
+wyoming,6-9
+alaska,7-1
+minnesota,7-2
